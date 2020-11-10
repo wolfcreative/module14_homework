@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="css/style.min.css">
+
+    <script>
+        // Я заметил что если не дождаться загрузки DOM, при querySelector button будет выходить null. Любопытный момент
+        document.addEventListener('DOMContentLoaded', function(){
+            const wrapper = document.querySelector('.wrapper');
+            const input = document.querySelector('input');
+            const button = document.querySelector('button');
+            const paragraph = document.querySelector('p');
+
+            function getRequest(url, callback) {
+                let request = new XMLHttpRequest();
+                request.open('GET', url, true);
+                
+                request.onload = function() {
+                    if (request.status >= 200 && request.status < 400) {
+                        const result = JSON.parse(request.response);
+
+                        if (callback) {
+                            callback(result);
+                        }
+                    } else {
+                        console.log(`Ответ сервера: ${request.status}`);
+                    }
+                };
+                
+                request.onerror = function() {
+                    console.log(`Ошибка: ${request.status}`);
+                };
+                
+                request.send();
+            };
+
+            function showResult(data) {
+                let blocks = '';
+
+                data.forEach(item => {
+                    let block = `<div><img src="${item.download_url}" /></div>`;
+
+                    blocks = blocks + block;
+                });
+
+                wrapper.innerHTML = blocks;
+            }
+
+            button.addEventListener('click', () => {
+                let inputValue = input.value;
+
+                if (inputValue > 0 && inputValue <= 10) {
+                    getRequest(`https://picsum.photos/v2/list?page=${Math.floor(Math.random() * 100)}&limit=${inputValue}`, showResult);
+
+                    paragraph.innerText = '';
+                } else {
+                    paragraph.innerText = 'число вне диапазона от 1 до 10';
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <input type="number" value="1" />
+    <button class="button" type="button">Запрашиваем данные</button>
+
+    <p></p>
+
+    <div class="wrapper"></div>
+</body>
+</html>

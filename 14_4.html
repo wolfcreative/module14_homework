@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="css/style.min.css">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const wrapper = document.querySelector('.wrapper');
+            const input1 = document.querySelector('.input1');
+            const input2 = document.querySelector('.input2');
+            const button = document.querySelector('button');
+            const paragraph = document.querySelector('p');
+
+            button.addEventListener('click', () => {
+                let input1Val = input1.value;
+                let input2Val = input2.value;
+
+                if ((input1Val > 99 && input1Val <= 300) && (input2Val > 99 && input2Val <= 300)) {
+                    fetch(`https://picsum.photos/${input1Val}/${input2Val}`)
+                        .then((response) => {
+                            wrapper.innerHTML = `<div><img src="${response.url}" /></div>`;
+                        })
+                        .catch(() => { console.log('error') });
+
+                    paragraph.innerText = '';
+                } else {
+                    paragraph.innerText = 'числа вне диапазона от 100 до 300';
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <input class="input1" type="number" value="250" />
+    <input class="input2" type="number" value="300" />
+
+    <button class="button" type="button">Запрашиваем данные</button>
+
+    <p></p>
+
+    <div class="wrapper"></div>
+</body>
+</html>

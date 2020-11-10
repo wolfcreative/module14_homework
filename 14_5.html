@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
+    <link rel="stylesheet" type="text/css" href="css/style.min.css">
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function(){
+            const wrapper = document.querySelector('.wrapper');
+            const input1 = document.querySelector('.input1');
+            const input2 = document.querySelector('.input2');
+            const button = document.querySelector('button');
+            const paragraph = document.querySelector('p');
+
+            function showResult(data) {
+                let blocks = '';
+
+                data.forEach(item => {
+                    let block = `<div><img src="${item.download_url}" /></div>`;
+
+                    blocks = blocks + block;
+                });
+
+                wrapper.innerHTML = blocks;
+            }
+
+            if (localStorage.getItem('lastData')){
+                showResult(JSON.parse(localStorage.getItem('lastData')));
+            }
+
+            button.addEventListener('click', () => {
+                let input1Val = input1.value;
+                let input2Val = input2.value;
+
+                if ((input1Val > 0 && input1Val <= 10) && (input2Val > 0 && input2Val <= 10)) {
+                    fetch(`https://picsum.photos/v2/list?page=${input1Val}&limit=${input2Val}`)
+                        .then(response => response.json())
+                        .then((data) => {
+                            showResult(data);
+
+                            localStorage.setItem('lastData', JSON.stringify(data));
+                        })
+                        .catch(() => console.log('error'));
+
+                    paragraph.innerText = '';
+                } else {
+                    switch(true){
+                        case ((input1Val <= 0 || input1Val > 10) && (input2Val < 0 || input2Val > 10)):
+                            paragraph.innerText = 'Номер страницы и лимит вне диапазона от 1 до 10';
+                        break;
+
+                        case (input1Val < 1 || input1Val > 10):
+                            paragraph.innerText = 'Номер страницы вне диапазона от 1 до 10';
+                        break;
+
+                        case (input2Val <= 1 || input2Val > 10):
+                            paragraph.innerText = 'Лимит вне диапазона от 1 до 10';
+                        break;
+                    }
+                }
+            });
+        });
+    </script>
+</head>
+<body>
+    <input class="input1" type="number" value="" placeholder="номер страницы" />
+    <input class="input2" type="number" value="" placeholder="лимит" />
+
+    <button class="button" type="button">запрос</button>
+
+    <p></p>
+
+    <div class="wrapper"></div>
+</body>
+</html>
