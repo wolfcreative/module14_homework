@@ -47,18 +47,13 @@
 
                     paragraph.innerText = '';
                 } else {
-                    switch(true){
-                        case ((input1Val <= 0 || input1Val > 10) && (input2Val < 0 || input2Val > 10)):
-                            paragraph.innerText = 'Номер страницы и лимит вне диапазона от 1 до 10';
-                        break;
-
-                        case (input1Val < 1 || input1Val > 10):
-                            paragraph.innerText = 'Номер страницы вне диапазона от 1 до 10';
-                        break;
-
-                        case (input2Val <= 1 || input2Val > 10):
-                            paragraph.innerText = 'Лимит вне диапазона от 1 до 10';
-                        break;
+                    // Здесь более логично было бы использовать обычный if-else, по функицоналу то же самое, но выглядит компактнее и лучше читается
+                    if ((input1Val <= 0 || input1Val > 10) && (input2Val < 0 || input2Val > 10)) {
+                        paragraph.innerText = 'Номер страницы и лимит вне диапазона от 1 до 10';
+                    } else if (input1Val < 1 || input1Val > 10) {
+                        paragraph.innerText = 'Номер страницы вне диапазона от 1 до 10';
+                    } else if (input2Val <= 1 || input2Val > 10) {
+                        paragraph.innerText = 'Лимит вне диапазона от 1 до 10';
                     }
                 }
             });
